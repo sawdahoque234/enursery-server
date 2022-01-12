@@ -270,6 +270,6 @@ run().catch(console.dir);
 
 
 //listen
-app.listen(config.port, () => {
+app.listen(process.env.PORT || 5000, () => {
     console.log('Server is running',port)
 })
