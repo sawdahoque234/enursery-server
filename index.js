@@ -2,9 +2,9 @@ const express = require('express')
 const { MongoClient } = require('mongodb');
 const cors = require('cors')
 require('dotenv').config();
+
 const ObjectId = require('mongodb').ObjectId
 const fileUpload = require('express-fileupload');
-var resizebase64 = require('resize-base64');  
 
 const bodyParser = require('body-parser')
 // const stripe = require('stripe')(process.env.STRIPE_SECRET);
@@ -18,9 +18,10 @@ app.use(fileUpload());
 // app.use(express.urlencoded({ limit: '50mb' }));
 
 
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
-const port = 5000
+// app.use(bodyParser.json({limit: '50mb'}));
+// app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+
+const port=process.env.PORT||5000
 app.get('/', (req, res) => {
     res.send('Welcome in eNursery Shop !!!!')
 });
@@ -141,6 +142,8 @@ async function run() {
             const orders = await cursor.toArray();
             res.send(orders);
         })
+
+
 // post order
 app.post('/orders', async (req, res) => {
     const order = req.body;
@@ -267,6 +270,6 @@ run().catch(console.dir);
 
 
 //listen
-app.listen(port, () => {
+app.listen(config.port, () => {
     console.log('Server is running',port)
 })
