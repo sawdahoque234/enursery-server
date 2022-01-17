@@ -131,10 +131,17 @@ async function run() {
             res.json(result)
                 
         });
+        //get reviews
         app.get('/reviews', async (req, res) => {
             const cursor = reviewsCollection.find({})
             const reviews = await cursor.toArray();
             res.send(reviews);
+        })
+        //get userss
+        app.get('/users', async (req, res) => {
+            const cursor = usersCollection.find({})
+            const users = await cursor.toArray();
+            res.send(users);
         })
          //get allorder
          app.get('/orders', async (req, res) => {
@@ -193,7 +200,7 @@ app.post('/orders', async (req, res) => {
                 sellerName,
                 price,
                 stock,
-                city,
+                city,  
                 phone,
                 description,
                 image: imageBuffer
@@ -232,7 +239,32 @@ app.post('/orders', async (req, res) => {
             const result = await ordersCollection.deleteOne(query)
             res.json(result)
         })
-       
+         //product delete from manage product
+         app.delete('/products/:id', async (req, res) => {
+            const id = req.params.id
+            const query={_id:ObjectId(id)}
+            const result=await productsCollection.deleteOne(query)
+            res.json(result)
+        })
+        
+        app.get('/allproducts',  async (req, res) => {
+            const cursor=productsCollection.find({})
+            const products = await cursor.toArray();
+            res.send(products);
+        })
+        
+        app.put('/updateStock',async(req,res)=>{
+            const product=req.body;
+            const query={productName: product.name};
+            const updateDoc = {
+                $set: {
+                 stock:  product.quantity
+                },
+              };
+              const result = await productsCollection.updateOne(query, updateDoc);
+            res.send(result);
+
+        })
      
     }
         
