@@ -74,14 +74,13 @@ async function run() {
 
         //get my orders
         app.get("/orders/:email", async (req, res) => {
-            console.log(req.params.email);
+            // console.log(req.params.email);
             const result = await ordersCollection
               .find({ email: req.params.email })
               .toArray();
             res.send(result);
           });
        
-        
         
 
         app.post("/payment", (req, res) => {
@@ -113,7 +112,7 @@ async function run() {
         //post users
         app.post('/users', async (req, res) => {
             const result = await usersCollection.insertOne(req.body);
-            console.log(result);
+            // console.log(result);
             res.json(result);
         });
         //put admin
@@ -123,14 +122,16 @@ async function run() {
             if (result) {
                 const documents = await usersCollection.updateOne(filter, {
                           
-                    $set: { role: "admin" },
+                    $set: { role: "seller" },
                 });
-                console.log(documents)
+                // console.log(documents)
             }
                     
             res.json(result)
                 
         });
+        //seller
+
         //get reviews
         app.get('/reviews', async (req, res) => {
             const cursor = reviewsCollection.find({})
@@ -155,7 +156,7 @@ async function run() {
 app.post('/orders', async (req, res) => {
     const order = req.body;
     const result = await ordersCollection.insertOne(order)
-    console.log('orders', order)
+    // console.log('orders', order)
     res.json(result)
     return res.status(200).json({ data: data });
 })
@@ -205,21 +206,21 @@ app.post('/orders', async (req, res) => {
                 description,
                 image: imageBuffer
             }
-            console.log(product)
+            // console.log(product)
             const result = await productsCollection.insertOne(product);
             res.json(result)
         })
         //updatestatus
         app.put("/statusUpdate/:id", async (req, res) => {
             const filter = { _id: ObjectId(req.params.id) };
-            console.log(req.params.id);
+            // console.log(req.params.id);
             const result = await ordersCollection.updateOne(filter, {
                 $set: {
                     status: req.body.status,
                 },
             });
             res.send(result);
-            console.log(result);
+            // console.log(result);
         });
         //admin check
        
@@ -227,11 +228,18 @@ app.post('/orders', async (req, res) => {
             const result = await usersCollection
                 .find({ email: req.params.email })
                 .toArray();
-            console.log(result);
+            // console.log(result);
             res.send(result);
         });
+//seller check
 
-
+app.get("/seller/:email", async (req, res) => {
+    const result = await usersCollection
+        .find({ email: req.params.email })
+        .toArray();
+    // console.log(result);
+    res.send(result);
+});
         //delete orders
         app.delete('/orders/:id', async (req, res) => {
             const id = req.params.id
@@ -246,6 +254,8 @@ app.post('/orders', async (req, res) => {
             const result=await productsCollection.deleteOne(query)
             res.json(result)
         })
+        //role
+
         
         app.get('/allproducts',  async (req, res) => {
             const cursor=productsCollection.find({})
